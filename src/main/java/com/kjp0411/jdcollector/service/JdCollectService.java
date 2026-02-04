@@ -1,6 +1,7 @@
 package com.kjp0411.jdcollector.service;
 
 import com.kjp0411.jdcollector.domain.JobDescription;
+import com.kjp0411.jdcollector.infra.csv.CsvEscapeUtil;
 import com.kjp0411.jdcollector.infra.parser.JdParser;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -36,10 +37,12 @@ public class JdCollectService {
         csvBuilder.append("title,company,content,sourceUrl\n");
 
         for (JobDescription jd : jobDescriptions) {
-            csvBuilder.append(jd.getTitle()).append(",")
-                .append(jd.getCompany()).append(",")
-                .append(jd.getContent()).append(",")
-                .append(jd.getSourceUrl()).append("\n");
+            csvBuilder
+                .append(CsvEscapeUtil.escape(jd.getTitle())).append(",")
+                .append(CsvEscapeUtil.escape(jd.getCompany())).append(",")
+                .append(CsvEscapeUtil.escape(jd.getContent())).append(",")
+                .append(CsvEscapeUtil.escape(jd.getSourceUrl()))
+                .append("\n");
         }
         return csvBuilder.toString();
     }
