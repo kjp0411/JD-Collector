@@ -1,6 +1,7 @@
 package com.kjp0411.jdcollector.service;
 
 import com.kjp0411.jdcollector.domain.JobDescription;
+import com.kjp0411.jdcollector.infra.parser.JdParser;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JdCollectService {
+
+    private final JdParser jdParser;
+
+    public JdCollectService(JdParser jdParser) {
+        this.jdParser = jdParser;
+    }
 
     public byte[] collectCsv(List<String> urls) {
         List<JobDescription> jobDescriptions = collectJobDescriptions(urls);
@@ -19,14 +26,7 @@ public class JdCollectService {
         List<JobDescription> result = new ArrayList<>();
 
         for (String url : urls) {
-            // TODO: 실제 파싱 로직으로 교체 예정
-            JobDescription jd = new JobDescription(
-                "dummy title",
-                "dummy company",
-                "dummy content",
-                url
-            );
-            result.add(jd);
+            result.add(jdParser.parse(url));
         }
         return result;
     }
