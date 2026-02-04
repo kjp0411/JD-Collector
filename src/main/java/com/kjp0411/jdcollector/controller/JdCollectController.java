@@ -1,6 +1,7 @@
 package com.kjp0411.jdcollector.controller;
 
 import com.kjp0411.jdcollector.controller.dto.JdCollectRequest;
+import com.kjp0411.jdcollector.service.JdCollectService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -13,13 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/jd")
-public class JdCollectController {
+public class JdCollectController{
+
+    private final JdCollectService jdCollectService;
+
+    public JdCollectController(JdCollectService jdCollectService) {
+        this.jdCollectService = jdCollectService;
+    }
 
     @PostMapping("/collect")
     public ResponseEntity<Resource> collectJd(@RequestBody JdCollectRequest request) {
         System.out.println("요청 URL 개수: " + request.getUrls().size());
 
-        byte[] dummyCsv = "title,company,content\n".getBytes();
+        byte[] dummyCsv = jdCollectService.collectCsv(request.getUrls());
         ByteArrayResource resource = new ByteArrayResource(dummyCsv);
 
         return ResponseEntity.ok()
